@@ -29,10 +29,10 @@ Modify the app/config/config.php file according to your needs. You can use examp
 
 ```
 //Database Configuration
-define('DB_HOST', '<databaseHost>');
-define('DB_USER', '<databaseUser>');
-define('DB_PASS', '<databasePassword>');
-define('DB_NAME', '<databaseName>');
+define('DB_HOST', 'localhost');
+define('DB_NAME', '_YOUR_DB_NAME_');
+define('DB_USER', '_YOUR_USER_');
+define('DB_PASS', '_YOUR_PASS_');
 ```
 
 Modify it like this
@@ -40,9 +40,9 @@ Modify it like this
 ```
 //Database Configuration
 define('DB_HOST', 'localhost');
+define('DB_NAME', 'shareposts');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'shareposts');
 ```
 
 ### htaccess file
