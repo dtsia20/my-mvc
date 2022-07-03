@@ -6,7 +6,7 @@
       <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold"><?php echo $data['title'];?></h1>
         <p class="col-md-8 fs-4"><?php echo $data['description'];?></p>
-        <button class="btn btn-primary btn-lg" type="button">Go to posts</button>
+        <a href="<?php echo URLROOT; ?>/posts" class="btn btn-primary btn-lg" type="button">Go to posts</a>
       </div>
 </div>
 
