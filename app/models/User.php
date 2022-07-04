@@ -35,6 +35,31 @@
                 return false;
             }
         }
+        public function update($data) {
+            $this->db->query('UPDATE users SET password = :password WHERE email = :email');
+            $this->db->bind(':email', $data['email']);
+            $this->db->bind(':password', $data['new_password']);
+
+            //  execute 
+            if($this->db->execute()){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        public function checkPassword($email, $password) {
+            $this->db->query('SELECT * FROM users WHERE email= :email');
+            $this->db->bind(':email', $email);
+
+            $row = $this->db->single();
+
+            $hashed_password = $row->password;
+            if(!password_verify($password, $hashed_password)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         // Find user by email
         public function findUserByEmail($email) {

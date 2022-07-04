@@ -4,6 +4,16 @@
             $this->userModel = $this->model('User');
         }
 
+        public function info() {
+            $user = $this->userModel->getUserById($_SESSION['user_id']);
+
+            $data = [
+                'title' => 'Account info',
+                'user' => $user,
+            ];
+
+            $this->view('users/info', $data);
+        }
         public function register() {
             // Check for POST
             if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -154,6 +164,88 @@
 
                 // Load view
                 $this->view('users/login', $data);
+            }
+        }
+        public function edit() {
+            if($_SERVER['REQUEST_METHOD'] == 'POST') {
+                // Process form
+
+                // Sanitize Post data
+                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+                // init data
+                $data = [
+                    'email' => $_SESSION['user_email'],
+                    'password' => trim($_POST['password']),
+                    'new_password' => trim($_POST['new_password']),
+                    'confirm_new_password' => trim($_POST['confirm_new_password']),
+                    'password_err' => '',
+                    'new_password_err' => '',
+                    'confirm_new_password_err' => '',
+
+                   ];
+
+                // validate Password
+                if(empty($data['password'])) {
+                    $data['password_err'] = 'Please enter your old password';
+                } else {
+                    // check password
+                    if($this->userModel->checkPassword(($data['email']), $data['password'])) {
+                        $data['password_err'] = 'This password is incorrect';
+                    }
+                }
+
+                // validate New Password
+                if(empty($data['new_password'])) {
+                    $data['new_password_err'] = 'Please enter a password';
+                } elseif (strlen($data['new_password']) <6) {
+                    $data['new_password_err'] = 'Password must be at least 6 characters';
+                }
+
+                // validate confirm New Password
+                if(empty($data['confirm_new_password'])) {
+                    $data['confirm_new_password_err'] = 'Please confirm  new password';
+                }else {
+                    if($data['new_password'] != $data['confirm_new_password']) {
+                        $data['confirm_new_password_err'] = 'Password do not match';
+                    }
+                }
+
+                // Make sure errors are empty
+                if (empty($data['password_err']) && empty($data['new_password_err']) && empty($data['confirm_new_password_err'])) {
+                    // validate
+                    
+                    // Hash Password
+                    $data['new_password'] = password_hash($data['new_password'], PASSWORD_DEFAULT);
+
+                    // Update User
+                    if($this->userModel->update($data)) {
+                        flash('login_message', 'Your password is updated, please login again');
+                         $this->logout();
+                    } else  {
+                        die('something gone wrong');
+                    }
+
+                } else {
+                    // Load view with errors
+                    $this->view('/users/edit', $data);
+                }
+              
+            } else {
+                // init data
+                
+                $data = [
+                    'email' => $_SESSION['user_email'],
+                    'password' => '',
+                    'new_password' => '',
+                    'confirm_new_password' => '',
+                    'password_err' => '',
+                    'new_password_err' => '',
+                    'confirm_new_password_err' => '',
+                ];
+
+                // Load view
+                $this->view('users/edit', $data);
             }
         }
 
